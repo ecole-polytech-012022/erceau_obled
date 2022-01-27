@@ -1,35 +1,63 @@
 package com.polytech.F1_Assist.controller;
 
+import com.polytech.F1_Assist.dto.UserDTO;
+import com.polytech.F1_Assist.mapper.UserMapper;
 import com.polytech.F1_Assist.model.User;
-import org.springframework.web.bind.annotation.RequestMapping;
-        import org.springframework.web.bind.annotation.GetMapping;
-        import org.springframework.stereotype.Controller;
-        import org.springframework.http.ResponseEntity;
-
-        import java.util.*;
+import com.polytech.F1_Assist.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import java.util.*;
 
 @RequestMapping("/users")
 @Controller
 public class UserController {
 
-    @GetMapping("")
-    public ResponseEntity<List<User>> getAllUsers() {
+    private final UserService userService;
 
-        User user1 = new User();
-        user1.setName("user1");
-        user1.setEmail("mail@test.com");
-        user1.setAge(34);
-
-        User user2 = new User();
-        user2.setName("user2");
-        user2.setEmail("mail2@test.com");
-        user2.setAge(21);
-
-        List<User> list = new ArrayList<>();
-        list.add(user1);
-        list.add(user2);
-
-        return ResponseEntity.ok(list);
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+    @GetMapping("")
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+
+        List<User> users = userService.getAllUsers();
+        List<UserDTO> usersDtos = UserMapper.toUserDTOList(users);
+
+        return ResponseEntity.ok(usersDtos);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer userId) {
+
+        User user = userService.getUserById(userId);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        UserDTO dto = UserMapper.toUserDTO(user);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO dto) {
+        User fromDto = UserMapper.toUser(dto);
+        User createdUser = userService.createUser(fromDto);
+        if (createdUser == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        UserDTO createdUserDto = UserMapper.toUserDTO(createdUser);
+        return ResponseEntity.ok(createdUserDto);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<List<User>> deleteUserById(@PathVariable Integer userId) {
+        boolean userDeleted = userService.deleteUserById(userId);
+        if (userDeleted == false) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 }

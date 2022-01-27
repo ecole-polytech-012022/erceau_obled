@@ -1,6 +1,7 @@
-package com.polytech.F1_Assist.model;
+package com.polytech.F1_Assist.dto;
 
 import lombok.*;
+
 import javax.persistence.*; // import persistance library
 
 @Entity // mark class as a database entity
@@ -10,7 +11,7 @@ import javax.persistence.*; // import persistance library
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users") // name of database table
-public class User {
+public class UserDTO {
 
     @Id // annotation for ID column
     @GeneratedValue(strategy = GenerationType.IDENTITY) // strategy for ID, here it well be ID++
