@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    container_name: api
+    ports:
+      - "8082:8080"
+    depends_on:
+      - mariadb
+    networks:
+      - link_F1_assist_mariadb
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    restart: on-failure
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=glopglop
+      - MYSQL_DATABASE=application
+      - MYSQL_USER=application
+      - MYSQL_PASSWORD=app_ercobled
+    networks:
+      - link_F1_assist_mariadb
+
+networks:
+  link_F1_assist_mariadb:
+
+volumes:
+  mariadb:
