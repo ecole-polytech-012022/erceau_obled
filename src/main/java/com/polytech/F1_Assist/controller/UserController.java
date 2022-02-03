@@ -6,12 +6,11 @@ import com.polytech.F1_Assist.model.User;
 import com.polytech.F1_Assist.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.http.ResponseEntity;
 import java.util.*;
 
 @RequestMapping("/users")
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
