@@ -1,9 +1,7 @@
-package com.polytech.F1_Assist.controller;
+package com.polytech.F1_Assist.intro_projet.controller;
 
-import com.polytech.F1_Assist.dto.UserDTO;
-import com.polytech.F1_Assist.mapper.UserMapper;
-import com.polytech.F1_Assist.model.User;
-import com.polytech.F1_Assist.service.UserService;
+import com.polytech.F1_Assist.intro_projet.model.User;
+import com.polytech.F1_Assist.intro_projet.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -20,35 +18,31 @@ public class UserController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
 
         List<User> users = userService.getAllUsers();
-        List<UserDTO> usersDtos = UserMapper.toUserDTOList(users);
 
-        return ResponseEntity.ok(usersDtos);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer userId) {
+    public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
 
         User user = userService.getUserById(userId);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
-        UserDTO dto = UserMapper.toUserDTO(user);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("")
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO dto) {
-        User fromDto = UserMapper.toUser(dto);
-        User createdUser = userService.createUser(fromDto);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.createUser(user);
         if (createdUser == null) {
             return ResponseEntity.badRequest().build();
         }
-        UserDTO createdUserDto = UserMapper.toUserDTO(createdUser);
-        return ResponseEntity.ok(createdUserDto);
+        return ResponseEntity.ok(createdUser);
     }
 
     @DeleteMapping("/{userId}")
