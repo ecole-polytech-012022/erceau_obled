@@ -10,22 +10,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PosteService {
 
     private final PosteRepository repository;
+    private final UserService userService;
 
-    public PosteService(PosteRepository repository) {
+
+    public PosteService(PosteRepository repository, UserService userService) {
         this.repository = repository;
+        this.userService = userService;
         this.initPostes();
     }
     public List<User> list = new ArrayList<>();
     public Integer id = 1;
 
+    public boolean affectMechanicstoPostes() {
+
+        List<Poste> postes = this.getAllPostes();
+        List<User> mechanics = this.userService.getAllUsers();
+        mechanics.removeIf(mec -> !mec.isAvailable());
+
+
+        if (postes.size() > mechanics.size())
+            return false;
+
+        /*double bestTime;
+        List<User> bestCombination;*/
+
+        Integer id = 0;
+        for (Poste ignored : postes) {
+            getPosteById(id).setMechanic(mechanics.indexOf(id));
+        }
+
+        return true;
+    }
+
     public void initPostes() {
         Poste poste1 = new Poste();
         poste1.setTyre("ArD");
         poste1.setActivity("Pistolet");
-        poste1.setMechanic(1);
 
         Poste poste2 = new Poste();
         poste2.setTyre("ArD");
